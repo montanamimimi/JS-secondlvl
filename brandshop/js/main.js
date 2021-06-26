@@ -1,9 +1,87 @@
 'use strict';
 
+// Тут еще есть что перевести на методы в классах, но по дз все что нужно сделано
+
+// Класс для 1 товара
+
+class GoodsItem {
+    constructor(name, price, img) {
+        this.name = name;
+        this.price = price;
+        this.img = img;
+        this.units = 0;
+    }
+
+    changePic(newImg){
+        this.img = newImg;
+    }
+
+    changeName(newName){
+        this.name = newName;
+    }
+
+    changePrice(newPrice){
+        this.price = newPrice;
+    }
+
+    addUnit(){
+        this.units++;
+    }
+}
+
+// Класс для списка товаров в корзине 
+
+class GoodsList {
+    constructor() {
+        this.items = [];
+    }
+
+    addItem(item) {
+        this.items.push(item);
+    }
+
+    takeTotal() {
+        let totalPrice = 0;
+        this.items.forEach(function(item){
+            totalPrice += item.price*item.units;
+        });
+        return totalPrice;
+    }
+
+    takeHTML(){
+        let prodNumber = 0;
+        let newProdList = "";
+        
+        for (let i = 0; i<this.items.length; i++) {
+            if (this.items[i].units > 0) {
+                 newProdList += constructProd(this.items[i]);
+                 prodNumber += this.items[i].units;            
+            }
+        }
+    
+        // Обновляем данные в корзине 
+        total.innerText = `Total amount: ${totalAmount}$`;
+        prodInBasket.innerHTML = newProdList;
+        roundOne.style.display = "block";    
+        roundOne.innerHTML = prodNumber;
+        checkout.style.display = "inline-block";
+        toCart.style.display = "inline-block";
+        toShop.style.display = "none";
+    }
+}
+
+// Добавляем в коризну все товары с количеством 0 (не оч правильно, потом поправлю)
+
+const myList = new GoodsList();
+
+goods.map(function(good){
+    let newGood = new GoodsItem(good.name, good.price, good.img);
+    myList.addItem(newGood);
+});
+
 // Товары и корзина
 
 let products = document.querySelectorAll('.products-block-container');
-let prodList = goods;
 let basket = document.querySelector('.cart-products');
 let prodInBasket = document.querySelector(".basket-list");
 let roundOne = document.querySelector(".link-cart-round");
@@ -12,7 +90,7 @@ let roundOne = document.querySelector(".link-cart-round");
 
 let noItems = document.querySelector('.no-items');
 let total = document.querySelector('.total');
-let totalAmount = 0;
+let totalAmount = myList.takeTotal();
 let checkout = document.querySelector('.btn-checkout');
 let toCart = document.querySelector('.btn-cart');
 let toShop = document.querySelector('.btn-shopping');
@@ -25,66 +103,50 @@ checkout.style.display = "none";
 toCart.style.display = "none";
 
 
-
 products.forEach(function(product){
-    // Назначаем кнопкам data-id
-
-    let button = product.querySelector(".products-add-button");
-    button.dataset.id = product.dataset.id;
-
     // При клике на кнопку вызываем функцию увеличения кол-ва товаров 
-
+    let button = product.querySelector(".products-add-button");
     button.addEventListener('click', logClick);
-
 })
-
 
 
 // Увеличивает на 1 количество требуемого товара в корзине. Показываем содержимое корзины. 
 
 function logClick(event) {
-    ++prodList[event.currentTarget.dataset.id].units;
-    getProductsList();     
-    showBasket(basket);   
-    setTimeout(hideBasket, 1200, basket);
+    myList.items[event.currentTarget.dataset.id].addUnit();
+    totalAmount = myList.takeTotal();
+    myList.takeHTML();     
+    showBasket();   
+    setTimeout(hideBasket, 1200);
 }
-
 
 // Показываем и прячем содержимое корзины
 
-function showBasket(basket){
+function showBasket(){
     basket.style.display = "block";
     noItems.innerHTML = "";
 }
 
-function hideBasket(basket){
+function hideBasket(){
     basket.style.display = "";
 }
 
+// закрывает корзину даже если на нее наведена мышка
+
+function closeBasket(){
+    basket.style.display = 'none';
+    setTimeout(function(){
+    basket.style.display = '';
+    }, 10);
+}
+
+
+// Действие для кнопки Go shopping если нет товаров 
+
+toShop.addEventListener('click', closeBasket);
+
 // Заполняем содержимое в корзине товарами (разметка)
 
-function getProductsList() {
-    let prodNumber = 0;
-    let newProdList = "";
-    
-    for (let i = 0; i<prodList.length; i++) {
-        if (prodList[i].units > 0) {
-             newProdList += constructProd(prodList[i]);
-             prodNumber += prodList[i].units;
-             totalAmount += prodList[i].price;
-        }
-    }
-
-    // Обновляем данные в корзине 
-
-    total.innerText = `Total amount: ${totalAmount}$`;
-    prodInBasket.innerHTML = newProdList;
-    roundOne.style.display = "block";    
-    roundOne.innerHTML = prodNumber;
-    checkout.style.display = "inline-block";
-    toCart.style.display = "inline-block";
-    toShop.style.display = "none";
-}
 
 
 // разметка для 1 товара в превью корзины
@@ -102,13 +164,5 @@ function constructProd(product) {
 
 }
 
-// Действие для кнопки Go shoppng если нет товаров 
-
-toShop.addEventListener('click', function(event){
-    basket.style.display = 'none';
-    setTimeout(function(){
-    basket.style.display = '';
-    }, 10);
-});
 
 
