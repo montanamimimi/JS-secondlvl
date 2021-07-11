@@ -1,0 +1,38 @@
+[
+    {
+      "id_product": 123,
+      "product_name": "Man's T-shirt",
+      "price": 40,
+      "picture": "product-adapt-1.jpg"
+    },
+    {
+      "id_product": 456,
+      "product_name": "Hoody Great",
+      "price": 50,
+      "picture": "product-adapt-2.jpg"
+    },
+    {
+        "id_product": 456,
+        "product_name": "T-shirt awsm",
+        "price": 37,
+        "picture": "product-adapt-3.jpg"
+    },
+    {
+        "id_product": 456,
+        "product_name": "W's something",
+        "price": 22,
+        "picture": "product-adapt-4.jpg"
+    },
+    {
+        "id_product": 456,
+        "product_name": "New awsm prod",
+        "price": 65,
+        "picture": "product-adapt-5.jpg"
+    },
+    {
+        "id_product": 456,
+        "product_name": "Uderpants",
+        "price": 12,
+        "picture": "product-adapt-6.jpg"
+    }
+  ]
